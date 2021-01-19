@@ -13,7 +13,7 @@ def validate_letter(letter, word):
         return letter.upper() in word
     except AssertionError as e:
         print(e)
-        return main()
+        return validate_letter(input(), word)
 
 
 def main():
