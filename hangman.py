@@ -1,5 +1,20 @@
 import random
 
+def validate_letter(letter, word):
+    """
+    Verify if letter is in word
+
+    param str letter a single alpha character
+    param str word any word 
+    returns True if letter is in word or False if not
+    """
+    try:
+        assert letter.isalpha() == True, '▲ ONLY TRY LETTERS ▲'
+        return letter.upper() in word
+    except AssertionError as e:
+        print(e)
+        return main()
+
 
 def main():
     WORDS = ('SPACE', 'PYTHON', 'LOOK', 'CAKE', 'COOKIE', 'PLATZI')
@@ -11,7 +26,8 @@ def main():
 
     # Recive letter
     letter = input('Choose a letter: ')
-    is_in_word = validate_letter(letter)
+    is_in_word = validate_letter(letter, word)
+    print(is_in_word)
 
 # look if the letter is in the word
 # print result
