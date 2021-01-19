@@ -10,11 +10,11 @@ def validate_letter(letter, word):
     returns True if letter is in word or False if not
     """
     try:
-        assert letter.isalpha() == True, 'Select a letter please'
+        assert letter.isalpha() == True, '▲ ONLY TRY LETTERS ▲'
         return letter.upper() in word
     except AssertionError as e:
         print(e)
-        return word
+        return validate_letter(input(), word)
 
 
 
