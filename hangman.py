@@ -15,6 +15,7 @@ def validate_letter(letter, word):
         print(e)
         return validate_letter(input(), word)
     
+
 def add_letter(word, letter, secret_word):
     """
     add the letter in the in secret_word
@@ -43,20 +44,22 @@ def main():
     secret_word = ''.join(secret_word)
     print(f'Guess the word: \n{secret_word}')
 
-    # Recive letter
-    letter = input('Choose a letter: ')
-    letter = letter.upper()
-    
-    # look if the letter is in the word
-    is_in_word = validate_letter(letter, word)
+    while secret_word != word:
+        # Recive letter
+        letter = input('Choose a letter: ')
+        letter = letter.upper()
+        
+        # look if the letter is in the word
+        is_in_word = validate_letter(letter, word)
 
-    # Add letter in secret_word
-    if is_in_word:
-        secret_word = add_letter(word, letter, secret_word)
-    print(secret_word)
-
+        # Add letter in secret_word
+        if is_in_word:
+            secret_word = add_letter(word, letter, secret_word)
+        
+        # print result
+        print(secret_word)
     
-# print result
+
 
 if __name__ == "__main__":
     print('WELCOME!!')
