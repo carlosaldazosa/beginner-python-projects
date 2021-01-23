@@ -27,7 +27,7 @@ def validate_letter(letter, word):
 
     param str letter a single alpha character
     param str word any word 
-    returns True if letter is in word or False if not
+    returns a list, first element is a bool if letter is in word, second is the letter
     """
     try:
         assert letter.isalpha() == True, '▲ ONLY TRY LETTERS ▲'
@@ -49,11 +49,11 @@ def add_letter(word, letter, secret_word):
     """
     word = list(word)
     secret_word = list(secret_word)
-    counter = 0
+    letter_index = 0
     for i in word:
         if letter == i:
-            secret_word[counter] = letter
-        counter += 1
+            secret_word[letter_index] = letter
+        letter_index += 1
     secret_word = ''.join(secret_word)
     return secret_word
 
