@@ -10,15 +10,16 @@ def option():
     try:
         options = input('WANNA PLAY AGAIN? \n1. YES \n2. NO\n')
 
-        assert options.isnumeric(), '▲ SELCT A VALID OPTION ▲'
-        assert options == '1' or options == '2', '▲ SELCT A VALID OPTION ▲'
+        assert options.isnumeric(), '▲ SELECT A VALID OPTION ▲'
+        assert options == '1' or options == '2', '▲ SELECT A VALID OPTION ▲'
         if options == '1':
             return True
         else:
             print('See you next time!!')
             return False
-    except:
-        return option
+    except AssertionError as e:
+        print(e)
+        return option()
 
 
 def validate_letter(letter, word):
@@ -30,7 +31,7 @@ def validate_letter(letter, word):
     returns a list, first element is a bool if letter is in word, second is the letter
     """
     try:
-        assert letter.isalpha() == True, '▲ ONLY TRY LETTERS ▲'
+        assert letter.isalpha(), '▲ ONLY TRY LETTERS ▲'
         letter = letter.upper()
         return [letter in word, letter]
     except AssertionError as e:
