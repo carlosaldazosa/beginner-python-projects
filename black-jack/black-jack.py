@@ -207,24 +207,26 @@ def start_game():
 # Ask card
     while True:
         print('YOUR HAND:')
+        print(show_hand(gumbler))
+        print(show_values(gumbler))
         # Base case if your hand is over 21
         if gumbler.count_a() > 0:
             if gumbler.value_1 > 21 and gumbler.value_2 > 21:
                 
-                print(show_hand(gumbler))
-                print(show_values(gumbler))
+                # print(show_hand(gumbler))
+                # print(show_values(gumbler))
                 print('You Lose')
                 return 
         else:
             if gumbler.value_1 > 21:
                 
-                print(show_hand(gumbler))
-                print(show_values(gumbler))
+                # print(show_hand(gumbler))
+                # print(show_values(gumbler))
                 print('You Lose')
                 return
 
-        print(show_hand(gumbler))
-        print(show_values(gumbler))
+        # print(show_hand(gumbler))
+        # print(show_values(gumbler))
 
         # Player imput to control game flow
         ask = input('1. Ask card. \n2. Pass. \n3. Double bet. \n') 
