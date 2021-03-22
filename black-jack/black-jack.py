@@ -6,7 +6,7 @@ class HandPlayer:
     def __init__(self, name, initial_cards, deck):
         self.name = name
         self.initial_cards = initial_cards
-        self.hand = self.deal_cards(deck)
+        self.hand = None
         self.value_1 = None
         self.value_2 = None
 
@@ -105,8 +105,6 @@ class HandPlayer:
 class DealerHand(HandPlayer):
     def __init__(self, name, initial_cards, deck):
         super().__init__(name, initial_cards, deck)
-        self.value_1 = None
-        self.value_2 = None
     
 
     def ask_card(self, deck):
@@ -229,29 +227,17 @@ def last_hand(player):
         return max(player.value_1, player.value_2)
 
 
-def start_game():
+def start_game(deck, dealer, gumbler):
     """
     Game flow
 
     no param
     void funtion
     """
-# Create Deck
-    spade = {'A♠': 1, '2♠': 2, '3♠': 3, '4♠': 4, '5♠': 5, '6♠': 6, '7♠': 7, 
-             '8♠': 8, '9♠': 9, '10♠': 10, 'J♠': 10, 'Q♠': 10, 'K♠': 10}
-    heart = {'A♥': 1, '2♥': 2, '3♥': 3, '4♥': 4, '5♥': 5, '6♥': 6, '7♥': 7, 
-             '8♥': 8, '9♥': 9, '10♥': 10, 'J♥': 10, 'Q♥': 10, 'K♥': 10}
-    club = {'A♣': 1, '2♣': 2, '3♣': 3, '4♣': 4, '5♣': 5, '6♣': 6, '7♣': 7, 
-            '8♣': 8, '9♣': 9, '10♣': 10, 'J♣': 10, 'Q♣': 10, 'K♣': 10}
-    diamond = {'A♦': 1, '2♦': 2, '3♦': 3, '4♦': 4, '5♦': 5, '6♦': 6, '7♦': 7, 
-               '8♦': 8, '9♦': 9, '10♦': 10, 'J♦': 10, 'Q♦': 10, 'K♦': 10}
-    
-    deck = dict(spade, **heart, **club, **diamond)
-
-# Create players
-    dealer = DealerHand('Dealer', 1, deck)
+    # Get hands and values
+    dealer.hand = dealer.deal_cards(deck)
     dealer.add_values()
-    gumbler = GumblerHand('Player', 2, deck, 500)
+    gumbler.hand = gumbler.deal_cards(deck)
     gumbler.add_values()
 
 # Bet
@@ -263,12 +249,13 @@ def start_game():
 
 # Counter for double bet
     counter = 0
-
+# Command not identified
+    valid_command = True
 # GAME LOGIC 
 # Ask card
     while True:
         # Bet only in the first turn
-        if counter == 0:
+        if counter == 0 and valid_command == True:
             pot = gumbler.bet(bet, pot)
 
         # Print Money and Pot
@@ -284,12 +271,10 @@ def start_game():
 
         # Base case if your hand is over 21
         if gumbler.count_a() > 0:
-            # Two hand's options over 21
             if gumbler.value_1 > 21 and gumbler.value_2 > 21:
                 gumbler.lose()
                 break
         else:
-            # Hand over 21
             if gumbler.value_1 > 21:
                 gumbler.lose()
                 break
@@ -334,6 +319,10 @@ def start_game():
                 pot = gumbler.bet(bet, pot)
                 bet *= 2
                 continue
+        else:
+            valid_command = False
+            print('SELECT A VALID OPTION!!')
+            continue
         # Giving final value
         gumbler_hand = last_hand(gumbler)
         dealer_hand = last_hand(dealer)
@@ -362,4 +351,33 @@ def start_game():
 
 
 if __name__ == '__main__':
-    start_game()
+    # Create Deck
+    spade = {'A♠': 1, '2♠': 2, '3♠': 3, '4♠': 4, '5♠': 5, '6♠': 6, '7♠': 7, 
+             '8♠': 8, '9♠': 9, '10♠': 10, 'J♠': 10, 'Q♠': 10, 'K♠': 10}
+    heart = {'A♥': 1, '2♥': 2, '3♥': 3, '4♥': 4, '5♥': 5, '6♥': 6, '7♥': 7, 
+             '8♥': 8, '9♥': 9, '10♥': 10, 'J♥': 10, 'Q♥': 10, 'K♥': 10}
+    club = {'A♣': 1, '2♣': 2, '3♣': 3, '4♣': 4, '5♣': 5, '6♣': 6, '7♣': 7, 
+            '8♣': 8, '9♣': 9, '10♣': 10, 'J♣': 10, 'Q♣': 10, 'K♣': 10}
+    diamond = {'A♦': 1, '2♦': 2, '3♦': 3, '4♦': 4, '5♦': 5, '6♦': 6, '7♦': 7, 
+               '8♦': 8, '9♦': 9, '10♦': 10, 'J♦': 10, 'Q♦': 10, 'K♦': 10}
+    deck = dict(spade, **heart, **club, **diamond)
+
+    # Create players
+    dealer = DealerHand('Dealer', 1, deck)
+    gumbler = GumblerHand('Player', 2, deck, 500)
+
+    # Start Game
+    start_game(deck, dealer, gumbler)
+
+    # Games to Play
+    while True:
+
+        play_again = input('PRESS the number of the option you select. \n1. Play again. \n2. Quit. \n')
+
+        if play_again == '1':
+            start_game(deck, dealer, gumbler)
+            continue
+        elif play_again == '2':
+            print('THANKS FOR PLAY \nHOPE TO SEE YOU SOON')
+            break
+        
