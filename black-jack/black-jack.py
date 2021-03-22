@@ -22,8 +22,8 @@ class HandPlayer:
         hand = {}
         for i in range(self.initial_cards):
             # Secure random
-            #seed()
-            seed(5)
+            seed()
+            #seed(5)
             # Get random card from deck
             card, value = random.choice(list(deck.items()))
             # Delete given card from deck
@@ -40,6 +40,7 @@ class HandPlayer:
         return int, number of A's in player's hand
         """
         counter = 0
+
         for key in self.hand.keys():
             if 'A' in key:
                 counter += 1
@@ -60,17 +61,22 @@ class HandPlayer:
         if a_quantity > 0 :
             # Takes A value as 11
             second_player_total += 10 * a_quantity
+
             for value in self.hand.values():
+
                 player_total += value
                 second_player_total += value 
         else:
             # Take A value as 1
+
             for value in self.hand.values():
+
                 player_total += value
                 second_player_total = 0
         
         self.value_1 = player_total
         self.value_2 = second_player_total
+
         return player_total,second_player_total
             
 
@@ -92,8 +98,8 @@ class HandPlayer:
             # Update values
             self.hand[card] = value
             self.value_1, self.value_2 = self.add_values()
-        else:
-            return
+
+        return
 
 
 class DealerHand(HandPlayer):
@@ -110,17 +116,19 @@ class DealerHand(HandPlayer):
         void function, add a card to the player's hand
         """
         # Secure random
-        #seed()
+        seed()
         #seed(99) A A
-        seed(70)
+        #seed(70)
         # Get random card from deck
-        #card, value = random.choice(list(deck.items()))
+        card, value = random.choice(list(deck.items()))
         # Delete given card from deck
-        #deck.pop(card)
+        deck.pop(card)
         # Update values
-        self.hand['K'] = 10
-        #self.hand[card] = value
+        #self.hand['K'] = 10
+        self.hand[card] = value
         self.value_1, self.value_2 = self.add_values()
+
+        return
 
 
 class GumblerHand(HandPlayer):
@@ -128,7 +136,6 @@ class GumblerHand(HandPlayer):
         super().__init__(name, initial_cards, deck)
 
 
-# Show the cards
 def show_hand(player):
     """
     Convert hand's key into string
@@ -137,10 +144,13 @@ def show_hand(player):
     return string with every hand's key
     """
     figures = ''
+
     for i in player.hand.keys():
         figures += i
         figures += ' '
+
     return figures
+
 
 def show_values(player):
     """
@@ -153,6 +163,7 @@ def show_values(player):
         return player.value_1
     else:
        return f'{player.value_1} || {player.value_2}'
+
 
 def last_hand(player):
     """
@@ -188,45 +199,31 @@ def start_game():
 
 # Create players
     dealer = DealerHand('Dealer', 1, deck)
+    dealer.add_values()
     gumbler = GumblerHand('Player', 2, deck)
+    gumbler.add_values()
 
 # GAME LOGIC 
-
-    print('DEALER HAND:')
-    print(show_hand(dealer))
-    dealer.add_values()
-    print(show_values(dealer))
-    
-
-#    print('YOUR HAND:')
-#    print(show_hand(gumbler))
-    gumbler.add_values()
-#    print(show_values(gumbler))
-    
-    
 # Ask card
     while True:
-        print('YOUR HAND:')
-        print(show_hand(gumbler))
-        print(show_values(gumbler))
+        # Print hands
+        print(f"""\tDEALER HAND:\t\tYOUR HAND:
+        {show_hand(dealer)}\t\t\t{show_hand(gumbler)}
+        {show_values(dealer)}\t\t\t{show_values(gumbler)}
+        """)
+        
+
         # Base case if your hand is over 21
         if gumbler.count_a() > 0:
-            if gumbler.value_1 > 21 and gumbler.value_2 > 21:
-                
-                # print(show_hand(gumbler))
-                # print(show_values(gumbler))
-                print('You Lose')
-                return 
-        else:
-            if gumbler.value_1 > 21:
-                
-                # print(show_hand(gumbler))
-                # print(show_values(gumbler))
-                print('You Lose')
-                return
 
-        # print(show_hand(gumbler))
-        # print(show_values(gumbler))
+            if gumbler.value_1 > 21 and gumbler.value_2 > 21:
+                print('\t\tYOU LOSE :(')
+                break
+        else:
+
+            if gumbler.value_1 > 21:
+                print('\t\tYOU LOSE :(')
+                break
 
         # Player imput to control game flow
         ask = input('1. Ask card. \n2. Pass. \n3. Double bet. \n') 
@@ -235,61 +232,51 @@ def start_game():
         gumbler_hand = 0
         dealer_hand = 0
 
-        # Ask for other card
         if ask == '1':
+        # Ask for other card
             gumbler.ask_card(deck)
-            #print(show_hand(gumbler))
-            #print(show_values(gumbler))
             continue
         else:
         # Automated dealer's move
-            print('Dealer\'s turn')
-            if dealer.count_a() > 0:
-                
-                # Rule: Dealer ask with 16 Case with A
-                while dealer.value_1 <= 17 and dealer.value_2 <= 17:
+            print('\t\tDEALER\'S TURN')
+
+            while dealer.value_1 <= 16:
+
+                    # Ask for card
+                    print('\tDEALER HAND:')
                     dealer.ask_card(deck)
+                    print(f'\t{show_hand(dealer)}')
+
                     # Case dealer have BlackJack
                     if dealer.value_2 == 21:
-                        
-                        print(show_hand(dealer))
-                        print(dealer.value_2)
-
-                    elif dealer.value_1 > 21 and dealer.value_2 > 21:
-                        print(show_hand(dealer))
-                        print(dealer.value_1)
-                        return
+                        print(f'\t{dealer.value_2}')
+                        break
                     
-                    print(show_hand(dealer))
-                    print(show_values(dealer))
-            else: 
-                # Rule: Dealer ask with 
-                while dealer.value_1 <= 16:
-                    dealer.ask_card(deck)
-                    print(show_hand(dealer))
-                    print(show_values(dealer))
+                    print(f'\t{show_values(dealer)}')
                 
         # Giving final value
         gumbler_hand = last_hand(gumbler)
         dealer_hand = last_hand(dealer)
 
+        print(f"""\tYOUR HAND:\t\tDEALER HAND:
+        {show_hand(gumbler)}\t\t\t{show_hand(dealer)}
+        {show_values(gumbler)}\t\t\t{show_values(dealer)}
+        """)
+
         # If Dealer hand is over 21 you win
         if dealer_hand > 21:
-            print('You Win')
+            print('\t\t\tYOU WIN')
             break
         
         # If your hand is higher than dealer's hand you win
         if gumbler_hand > dealer_hand:
-            print(dealer_hand)
-            print('You Win')
+            print('\t\t\tYOU WIN')
         # If your hand is lower than dealer's hand you lose
         elif gumbler_hand < dealer_hand:
-            print(dealer_hand)
-            print('You Lose')
+            print('\t\t\tYOU LOSE')
         # If both hand's are equal
         else:
-            print(dealer_hand)
-            print('Tie')
+            print('\t\tTIE')
 
         break
 
