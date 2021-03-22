@@ -138,22 +138,50 @@ class GumblerHand(HandPlayer):
         self.money = money
 
 
-    def bet(self, bet):
+    def bet(self, bet, pot):
+        """
+        Bet and rest the bet of money
+
+        param int bet, ammount of bet
+        param int pot, hole bet of dealer and gumbler
+        return pot
+        """
         self.money -= bet
-        return self.money
+        # Increasing the money by two players
+        pot += bet * 2
+        return pot
 
 
-    def win(self, bet):
+    def win(self, pot):
+        """
+        Add the pot to gumbler's money and print WIN
+
+        param int pot, hole bet of dealer and gumbler
+        return money, gumbler's money
+        """
         print('\t\t\tYOU WIN!!!')
-        self.money += bet * 2
+        self.money += pot
         return self.money
 
 
     def lose(self):
+        """
+        Print LOSE
+
+        no param
+        return money, gumbler's money
+        """
         print('\t\t\tYOU LOSE!!!')
         return self.money
     
+
     def tie(self, bet):
+        """
+        Add gumbler's bet to his money
+
+        param int bet, gumbler's bet
+        return money, gumbler's money
+        """
         print('\t\t\tTIE!!!')
         self.money += bet
         return self.money
@@ -228,6 +256,7 @@ def start_game():
 
 # Bet
     bet = 10
+    pot = 0
 
 # Print gyumbler money
     print(f'your money: {gumbler.money}$')
@@ -239,10 +268,13 @@ def start_game():
 # Ask card
     while True:
         # Bet only in the first turn
-        gumbler.bet(bet) if counter == 0 else None
-        # Print Money and Bet
-        print(f'Bet: {bet}')
-        print(f'Your money: {gumbler.money}')
+        if counter == 0:
+            pot = gumbler.bet(bet, pot)
+
+        # Print Money and Pot
+        print(f'Your Bet: {bet}')
+        print(f'Your Money: {gumbler.money}')
+        print(f'POT: {pot}')
         # Print hands
         print(f"""\tYOUR HAND:\t\tDEALER HAND:
         {show_hand(gumbler)}\t\t\t{show_hand(dealer)}
@@ -299,49 +331,35 @@ def start_game():
                 # Disable Double bet option
                 counter += 1
                 # Double bet
-                gumbler.bet(bet)
+                pot = gumbler.bet(bet, pot)
                 bet *= 2
                 continue
         # Giving final value
         gumbler_hand = last_hand(gumbler)
         dealer_hand = last_hand(dealer)
 
-        print(f"""\tYOUR HAND:\t\tDEALER HAND:
+        print(f"""\n\tYOUR HAND:\t\tDEALER HAND:
         {show_hand(gumbler)}\t\t\t{show_hand(dealer)}
         {show_values(gumbler)}\t\t\t{show_values(dealer)}
         """)
 
         # If Dealer hand is over 21 you win
         if dealer_hand > 21:
-            gumbler.win(bet)
+            gumbler.win(pot)
         # If your hand is higher than dealer's hand you win
         elif gumbler_hand > dealer_hand:
-            gumbler.win(bet)
+            gumbler.win(pot)
         # If your hand is lower than dealer's hand you lose
         elif gumbler_hand < dealer_hand:
             gumbler.lose()
         # If both hand's are equal
         else:
             gumbler.tie(bet)
-            
+
         break
 
     print(f'Your money: {gumbler.money}$')
 
-# Valuate hands
-    
-
-    # if dealer_hand 
-    
-# Create Money
-# Bet amount
-
-
-# Double bet
-# Choose separate cards
-# if 2 A's give 1 card for each A
-# Choose get other card
-# Choose play again?
 
 if __name__ == '__main__':
     start_game()
