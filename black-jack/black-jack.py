@@ -108,6 +108,7 @@ class DealerHand(HandPlayer):
         self.value_1 = None
         self.value_2 = None
     
+
     def ask_card(self, deck):
         """
         Ask for another card
@@ -132,8 +133,30 @@ class DealerHand(HandPlayer):
 
 
 class GumblerHand(HandPlayer):
-    def __init__(self, name, initial_cards, deck):
+    def __init__(self, name, initial_cards, deck, money):
         super().__init__(name, initial_cards, deck)
+        self.money = money
+
+
+    def bet(self, bet):
+        self.money -= bet
+        return self.money
+
+
+    def win(self, bet):
+        print('\t\t\tYOU WIN!!!')
+        self.money += bet * 2
+        return self.money
+
+
+    def lose(self):
+        print('\t\t\tYOU LOSE!!!')
+        return self.money
+    
+    def tie(self, bet):
+        print('\t\t\tTIE!!!')
+        self.money += bet
+        return self.money
 
 
 def show_hand(player):
@@ -200,60 +223,85 @@ def start_game():
 # Create players
     dealer = DealerHand('Dealer', 1, deck)
     dealer.add_values()
-    gumbler = GumblerHand('Player', 2, deck)
+    gumbler = GumblerHand('Player', 2, deck, 500)
     gumbler.add_values()
+
+# Bet
+    bet = 10
+
+# Print gyumbler money
+    print(f'your money: {gumbler.money}$')
+
+# Counter for double bet
+    counter = 0
 
 # GAME LOGIC 
 # Ask card
     while True:
+        # Bet only in the first turn
+        gumbler.bet(bet) if counter == 0 else None
+        # Print Money and Bet
+        print(f'Bet: {bet}')
+        print(f'Your money: {gumbler.money}')
         # Print hands
-        print(f"""\tDEALER HAND:\t\tYOUR HAND:
-        {show_hand(dealer)}\t\t\t{show_hand(gumbler)}
-        {show_values(dealer)}\t\t\t{show_values(gumbler)}
+        print(f"""\tYOUR HAND:\t\tDEALER HAND:
+        {show_hand(gumbler)}\t\t\t{show_hand(dealer)}
+        {show_values(gumbler)}\t\t\t{show_values(dealer)}
         """)
         
 
         # Base case if your hand is over 21
         if gumbler.count_a() > 0:
-
+            # Two hand's options over 21
             if gumbler.value_1 > 21 and gumbler.value_2 > 21:
-                print('\t\tYOU LOSE :(')
+                gumbler.lose()
                 break
         else:
-
+            # Hand over 21
             if gumbler.value_1 > 21:
-                print('\t\tYOU LOSE :(')
+                gumbler.lose()
                 break
 
         # Player imput to control game flow
-        ask = input('1. Ask card. \n2. Pass. \n3. Double bet. \n') 
+        ask = input(f'1. Ask card. \n2. Pass. \n{"3. Double bet. " if counter == 0 else ""} \n')
 
         # Final hand's values
         gumbler_hand = 0
         dealer_hand = 0
-
+        # Pass
         if ask == '1':
-        # Ask for other card
+            # Disable Double bet option
+            counter += 1
+            # Ask for other card
             gumbler.ask_card(deck)
             continue
-        else:
-        # Automated dealer's move
-            print('\t\tDEALER\'S TURN')
+        elif ask == '2':
+            # Disable Double bet option
+            counter += 1
+            # Automated dealer's move
+            print('\t\t     DEALER\'S TURN')
 
             while dealer.value_1 <= 16:
 
                     # Ask for card
-                    print('\tDEALER HAND:')
+                    print('\t\t     DEALER HAND:')
                     dealer.ask_card(deck)
-                    print(f'\t{show_hand(dealer)}')
+                    print(f'\t\t     {show_hand(dealer)}')
 
                     # Case dealer have BlackJack
                     if dealer.value_2 == 21:
-                        print(f'\t{dealer.value_2}')
+                        print(f'\t\t     {dealer.value_2}')
                         break
                     
-                    print(f'\t{show_values(dealer)}')
-                
+                    print(f'\t\t     {show_values(dealer)}')
+        # Double bet
+        elif ask == '3' and counter == 0:
+                # Disable Double bet option
+                counter += 1
+                # Double bet
+                gumbler.bet(bet)
+                bet *= 2
+                continue
         # Giving final value
         gumbler_hand = last_hand(gumbler)
         dealer_hand = last_hand(dealer)
@@ -265,20 +313,20 @@ def start_game():
 
         # If Dealer hand is over 21 you win
         if dealer_hand > 21:
-            print('\t\t\tYOU WIN')
-            break
-        
+            gumbler.win(bet)
         # If your hand is higher than dealer's hand you win
-        if gumbler_hand > dealer_hand:
-            print('\t\t\tYOU WIN')
+        elif gumbler_hand > dealer_hand:
+            gumbler.win(bet)
         # If your hand is lower than dealer's hand you lose
         elif gumbler_hand < dealer_hand:
-            print('\t\t\tYOU LOSE')
+            gumbler.lose()
         # If both hand's are equal
         else:
-            print('\t\tTIE')
-
+            gumbler.tie(bet)
+            
         break
+
+    print(f'Your money: {gumbler.money}$')
 
 # Valuate hands
     
